@@ -19,11 +19,11 @@
 @import "@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
+/*@import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+@import "@ionic/angular/css/flex-utils.css";*/
 
 /**
  * Ionic Dark Mode
@@ -32,8 +32,69 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-@import "@ionic/angular/css/palettes/dark.always.css";
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
-/* Custom Theme CSS */
-@import "./theme/custom-theme.scss"
+/*@import "@ionic/angular/css/palettes/dark.system.css";*/
+
+
+.btn-conectar {
+    --background: #FFB800;
+    --color: black;
+  }
+
+.btn-registrar {
+    --border-color: #FFB800;
+    --color: #FFB800;
+  }
+
+  .btn-guardar-perfil {
+    --background: #FFB800;
+    --color: black;
+  }
+
+  .btn-recupera-clave {
+    --background: #FFB800 important!;
+    --color: black;
+  }
+.btn-recuperar {
+    --color: black;
+    text-decoration: underline;
+    text-align: center;
+    display: block;
+  }
+
+  .custom-background {
+    --ion-background-color: #000000; /* Dark grey color */
+  }
+
+  .logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  
+  .login-image {
+    width: 100%; /* Ensures image takes full width of the container */
+    height: auto; /* Maintains aspect ratio */
+    object-fit: contain; /* Crops the image to fit the container */
+    object-position: center;
+    border-radius: 50%;
+  }
+
+  .password-input {
+    --background: none !important;
+    --background-color: transparent !important;
+    background: transparent !important;
+  }
+
+  ion-card {
+    margin: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    --ion-background-color: #ffffff;
+  }
+
+
+
+
+

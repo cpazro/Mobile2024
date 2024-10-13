@@ -1,76 +1,100 @@
-import { AuthenticatorService } from './../Servicios/authenticator.service';
-import { Component } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
-import { AnimationController } from '@ionic/angular';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { addIcons } from 'ionicons';
+import { eye, eyeOff, lockClosed } from 'ionicons/icons';
+import { Animation, AnimationController } from '@ionic/angular';
+import { Router, NavigationExtras } from '@angular/router';
+import { AuthenticatorService } from '../Servicios/authenticator.service';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
 })
-export class HomePage {
-  /* Objeto JSON para usuario */
+export class HomePage implements OnInit, AfterViewInit {
   user = {
     username: '',
     password: '',
   };
-  /* mensaje de respuesta */
+
   mensaje = '';
-  /* Estado de carga */
+  showPassword = false;
+  passwordToggleIcon = 'eye-off';
   spinner = false;
+  private animation?: Animation;
+
+  @ViewChild('logo', { static: false }) logo!: ElementRef;
 
   constructor(
+    private animationCtrl: AnimationController,
     private router: Router,
-    private animationController: AnimationController,
     private auth: AuthenticatorService
-  ) {}
-  ngAfterContentInit() {
-    this.animarLogin();
-  }
-  animarLogin() {
-    /* seleccionamos el item desde el Front con un query selector y reconocemos el elemento como HTMLElement para que sea compatible con la animacion */
-    const loginIcon = document.querySelector('.login img') as HTMLElement;
-    /* Creamos y configuramos la animacion */
-    const animacion = this.animationController
-      .create()
-      .addElement(loginIcon)
-      .duration(4000)
-      .iterations(Infinity)
-      /* la configuracion de keyframe permite editar el diseño segun el tiempo de la animacion empezando desde 0 hasta 1 usando los decimales(0.5,0.25 ,0.2) */
-      .keyframes([
-        { offset: 0, opacity: '1', width: '200px', height: '200px' },
-        { offset: 0.5, opacity: '0.5', width: '150px', height: '150px' },
-        { offset: 1, opacity: '1', width: '200px', height: '200px' },
-      ]);
-    animacion.play();
+  ) {
+    addIcons({
+      'eye': eye,
+      'eye-off': eyeOff,
+      'lock-closed': lockClosed
+    });
   }
 
-  /* NGIF = permite realizar una validacion entre html y ts validando que la variable sea true o false */
-  /* Permite cambiar el valor por defecto del spinner y comprobarlo con ngIF */
+  ngOnInit() {
+    // Initialization logic if needed
+  }
+
+  ngAfterViewInit() {
+    // Prepare the animation, but do not start it yet
+    this.animation = this.animationCtrl.create()
+      .addElement(this.logo.nativeElement)
+      .duration(1500)
+      .fromTo('transform', 'translateX(0px)', 'translateX(100px)'); // Move to the right
+  }
+
+  onLogoClick(): void {
+    // Play the animation when the logo is clicked
+    if (this.animation) {
+      this.animation.play();
+    }
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+    this.passwordToggleIcon = this.showPassword ? 'eye' : 'eye-off';
+  }
+
+  navigateToRegistro(): void {
+    this.router.navigate(['/registro']);
+  }
+
   cambiarSpinner() {
     this.spinner = !this.spinner;
   }
+
   validar() {
-    this.auth
-      .loginBDD(this.user.username, this.user.password)
-      .then((res) => {
-        this.mensaje = 'Conexion exitosa';
-        let navigationExtras: NavigationExtras = {
-          state: {
-            username: this.user.username,
-            password: this.user.password,
-          },
-        };
-        this.cambiarSpinner();
-        /* setTimeout = permite generar un pequeño delay para realizar la accion */
-        setTimeout(() => {
-          this.router.navigate(['/perfil'], navigationExtras);
-          this.cambiarSpinner();
-          this.mensaje = '';
-        }, 3000);
-      })
-      .catch((error) => {
-        this.mensaje = 'Error en las credenciales';
-      });
+    if (!this.user.username || !this.user.password) {
+      this.mensaje = 'Por favor ingrese email y contraseña'; // Display message if both fields are empty
+    } else if (!this.user.username) {
+      this.mensaje = 'Por favor ingrese un nombre de usuario'; // Display message if username is empty
+    } else if (!this.user.password) {
+      this.mensaje = 'Por favor ingrese una contraseña'; // Display message if password is empty
+    } else {
+      this.auth.loginBDD(this.user.username, this.user.password)
+        .then((res) => {
+          this.mensaje = 'Conexión exitosa';
+          let navigationExtras: NavigationExtras = {
+            state: {
+              username: this.user.username,
+              password: this.user.password,
+            },
+          };
+          this.navigateToPerfil(navigationExtras);
+        })
+        .catch((err) => {
+          this.mensaje = 'Error de conexión';
+        });
+    }
+  }
+
+  navigateToPerfil(navigationExtras: NavigationExtras): void {
+    // Navigate to perfil page with navigation extras
+    this.router.navigate(['/perfil'], navigationExtras);
   }
 }
