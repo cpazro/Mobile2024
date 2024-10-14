@@ -10,3 +10,7 @@ Material Icon <br>
 HTML CSS Support <br>
 Auto Close tag <br>
 Auto Rename Tag <br>
+
+
+npm install -g json-server
+json-server -w db.json
